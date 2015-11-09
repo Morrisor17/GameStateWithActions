@@ -43,8 +43,8 @@ public class SpadesState {
         trickCards = new Card[]{};
 
         player1Hand = new Card[]{};
-        player2Hand = new Card[]{};
         player3Hand = new Card[]{};
+        player2Hand = new Card[]{};
         player4Hand = new Card[]{};
 
         playerBags = new int[]{0, 0, 0, 0};
@@ -163,17 +163,22 @@ public class SpadesState {
      * @param index index of card in the player's hand
      */
     public void playCard(int index){
-        if(currentPlayer == 0)
+        if(currentPlayer == 0) {
             trickCards[cardsPlayed] = player1Hand[index];
+            player1Hand[index] = null;
+        }
 
-        else if(currentPlayer == 1)
+        else if(currentPlayer == 1) {
             trickCards[cardsPlayed] = player2Hand[index];
+        }
 
-        else if(currentPlayer == 2)
+        else if(currentPlayer == 2) {
             trickCards[cardsPlayed] = player3Hand[index];
+        }
 
-        else if(currentPlayer == 3)
+        else if(currentPlayer == 3) {
             trickCards[cardsPlayed] = player4Hand[index];
+        }
 
         if(cardsPlayed <3)
             cardsPlayed++;
