@@ -1,5 +1,6 @@
 package edu.up.cs301.homework5dversion3;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -29,6 +30,8 @@ public class SpadesState {
 
     int userTeammate; //player number of user's teammate
 
+    ArrayList<Card> deck = new ArrayList<>();
+
     public SpadesState() {
         currentPlayer = 0;
 
@@ -40,17 +43,48 @@ public class SpadesState {
         team1Score = 0;
         team2Score = 0;
 
-        trickCards = new Card[]{};
+        trickCards = new Card[4];
 
-        player1Hand = new Card[]{};
-        player3Hand = new Card[]{};
-        player2Hand = new Card[]{};
-        player4Hand = new Card[]{};
+        initDeck();
+
+        Random rand = new Random();
+
+        player1Hand = new Card[13];
+        player2Hand = new Card[13];
+        player3Hand = new Card[13];
+        player4Hand = new Card[13];
+
+        int i;
+        int cardNo;
+        for(i=0;i<13;i++) {
+            cardNo = rand.nextInt(deck.size());
+            player1Hand[i] = deck.get(cardNo);
+            deck.remove(cardNo);
+        }
+
+        for(i=0;i<13;i++) {
+            cardNo = rand.nextInt(deck.size());
+            player2Hand[i] = deck.get(cardNo);
+            deck.remove(cardNo);
+        }
+
+        for(i=0;i<13;i++) {
+            cardNo = rand.nextInt(deck.size());
+            player3Hand[i] = deck.get(cardNo);
+            deck.remove(cardNo);
+        }
+
+        for(i=0;i<13;i++) {
+            cardNo = rand.nextInt(deck.size());
+            player4Hand[i] = deck.get(cardNo);
+            deck.remove(cardNo);
+        }
+
+
 
         playerBags = new int[]{0, 0, 0, 0};
         playerBids = new int[]{0, 0, 0, 0};
 
-        Random rand = new Random();
         userTeammate = rand.nextInt(3) + 1;
     }
 
@@ -163,29 +197,67 @@ public class SpadesState {
      * @param index index of card in the player's hand
      */
     public void playCard(int index){
+
+        boolean detectError = false;
+
         if(currentPlayer == 0) {
-            trickCards[cardsPlayed] = player1Hand[index];
-            player1Hand[index] = null;
+            if(player1Hand[index]!=null) {
+                trickCards[cardsPlayed] = player1Hand[index];
+                player1Hand[index] = null;
+            } else detectError = true;
         }
 
         else if(currentPlayer == 1) {
-            trickCards[cardsPlayed] = player2Hand[index];
+            if(player2Hand[index]!=null) {
+                trickCards[cardsPlayed] = player2Hand[index];
+                player2Hand[index] = null;
+            } else detectError = true;
         }
 
         else if(currentPlayer == 2) {
-            trickCards[cardsPlayed] = player3Hand[index];
+            if(player3Hand[index]!=null) {
+                trickCards[cardsPlayed] = player3Hand[index];
+                player3Hand[index] = null;
+            } else detectError = true;
         }
 
         else if(currentPlayer == 3) {
-            trickCards[cardsPlayed] = player4Hand[index];
+            if(player4Hand[index]!=null) {
+                trickCards[cardsPlayed] = player4Hand[index];
+                player4Hand[index] = null;
+            } else detectError = true;
         }
 
-        if(cardsPlayed <3)
+        //if an invalid move was made, don't move on to the next turn
+        if(!detectError) {
             cardsPlayed++;
-        else cardsPlayed = 0;
 
-        if(currentPlayer<3)
-            currentPlayer++;
-        else currentPlayer = 0;
+            if (currentPlayer < 3)
+                currentPlayer++;
+            else currentPlayer = 0;
+        }
+
+        if(cardsPlayed >= 4) {
+            int i;
+            for(i=0;i<4;i++){
+                deck.add(trickCards[i]);
+                trickCards[i] = null;
+            }
+        }
+    }
+
+    /**
+     * helper method for the constructor
+     */
+    private void initDeck(){
+        int i;
+        for(i=2;i<15;i++)
+            deck.add(new Card(i,Card.CLUBS));
+        for(i=2;i<15;i++)
+            deck.add(new Card(i,Card.DIAMONDS));
+        for(i=2;i<15;i++)
+            deck.add(new Card(i,Card.SPADES));
+        for(i=2;i<15;i++)
+            deck.add(new Card(i,Card.HEARTS));
     }
 }
